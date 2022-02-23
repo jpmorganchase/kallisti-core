@@ -1,0 +1,15 @@
+graft bin
+graft static
+graft vendor
+
+include *.py
+include MANIFEST.in
+include README.md
+include *.txt
+include *.sh
+include *.cfg
+include Makefile
+
+recursive-include kallisticore/templates *
+
+global-exclude *.py[co]

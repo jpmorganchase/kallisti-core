@@ -1,0 +1,300 @@
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="reportstyle">
+    <xsl:template match="/">
+        <html lang="en">
+            <head>
+                <title>Kallisti Report</title>
+                <style>
+                    body {font-family: Calibri;}
+                    ul, ol {margin-top: 0;}
+                    code {color:#4070a0; display: block; margin: 3px 0 0;}
+                    .step-header {font-size: 1.25em; margin: 0;}
+                </style>
+            </head>
+            <body>
+                <h1>Kallisti Report</h1>
+                <xsl:if test="count(//report/root/list-item)&gt;0">
+                    <p>
+                        This report aggregates over
+                        <span>
+                            <xsl:value-of select="count(//report/root/list-item)"/>
+                        </span>
+                        experiments spanning over the following subjects: <br/>
+                    </p>
+                    <ul>
+                        <xsl:for-each select="report/root/list-item">
+                            <li>
+                                <a href="#{name}">
+                                    <strong>
+                                        <xsl:value-of select="name"/>
+                                    </strong>
+                                </a>
+                                <ul>
+                                    <xsl:for-each select="trials">
+                                        <xsl:for-each select="list-item">
+                                            <li>
+                                                <a href="#{id}">
+                                                    <strong>
+                                                        [
+                                                        <span>
+                                                            <span style="text-transform:uppercase">
+                                                                <xsl:value-of select="status"/>
+                                                            </span>
+                                                            ]
+                                                        </span>
+                                                        Trial ID:
+                                                        <span>
+                                                            <xsl:value-of select="id"/>
+                                                        </span>
+                                                    </strong>
+                                                </a>
+                                            </li>
+                                        </xsl:for-each>
+                                    </xsl:for-each>
+                                </ul>
+                            </li>
+                        </xsl:for-each>
+                    </ul>
+                    <h2>Experiments</h2>
+                    <xsl:for-each select="report/root/list-item">
+                        <h3>
+                            <a name="{name}">
+                                <xsl:value-of select="name"/>
+                            </a>
+                        </h3>
+                        <strong>Description:</strong>
+                        <span>
+                            <xsl:value-of select="description"/>
+                        </span>
+                        <br/>
+                        <xsl:if test="count(metadata/*)&gt;0">
+                            <strong>Metadata:</strong>
+                            <xsl:for-each select="metadata/*">
+                                <br/>
+                                &#160; &#160; &#160; &#160;
+                                <strong>
+                                    <xsl:value-of select="name()"/>
+                                </strong>
+                                :
+                                <xsl:value-of select="."/>
+                            </xsl:for-each>
+                            <br/>
+                        </xsl:if>
+                        <strong>Pre-Steps:</strong>
+                        <xsl:if test="count(pre_steps/list-item)&gt;0">
+                            <ol>
+                                <xsl:for-each select="pre_steps/list-item">
+                                    <li>
+                                        <xsl:value-of select="step"/>
+                                    </li>
+                                    <strong>Command:</strong>
+                                    <span>
+                                        <i>
+                                            <xsl:value-of select="do"/>
+                                        </i>
+                                    </span>
+                                    <br/>
+                                </xsl:for-each>
+                            </ol>
+                        </xsl:if>
+                        <xsl:if test="count(pre_steps/list-item)=0">None defined<br/></xsl:if>
+                        <strong>Steps:</strong>
+                        <ol>
+                            <xsl:for-each select="steps/list-item">
+                                <li>
+                                    <xsl:value-of select="step"/>
+                                </li>
+                                <strong>Command:</strong>
+                                <span>
+                                    <i>
+                                        <xsl:value-of select="do"/>
+                                    </i>
+                                </span>
+                                <br/>
+                            </xsl:for-each>
+                        </ol>
+                        <strong>Post-Steps:</strong>
+                        <xsl:if test="count(post_steps/list-item)&gt;0">
+                            <ol>
+                                <xsl:for-each select="post_steps/list-item">
+                                    <li>
+                                        <xsl:value-of select="step"/>
+                                    </li>
+                                    <strong>Command:</strong>
+                                    <span>
+                                        <i>
+                                            <xsl:value-of select="do"/>
+                                        </i>
+                                    </span>
+                                    <br/>
+                                </xsl:for-each>
+                            </ol>
+                        </xsl:if>
+                        <xsl:if test="count(post_steps/list-item)=0">None defined<br/></xsl:if>
+                        <xsl:for-each select="trials">
+                            <h3>Trials</h3>
+                            <xsl:if test="count(list-item)&gt;0">
+                                Number of Successful Trials:
+                                <span>
+                                    <xsl:value-of select="count(list-item/status[text() = 'Succeeded'])"/>
+                                    /
+                                    <xsl:value-of select="count(list-item)"/>
+                                </span>
+                                <br/>
+                                <br/>
+                                <xsl:for-each select="list-item">
+                                    <a name="{id}">
+                                        <strong>Trial ID:</strong>
+                                        <span>
+                                            <strong><xsl:value-of select="id"/></strong>
+                                        </span>
+                                    </a>
+                                    <br/>
+                                    <strong>Executed Time:</strong>
+                                    <span>
+                                        <xsl:value-of select="concat(substring(executed_at,1,10),' ',substring(executed_at,12,8), ' GMT')"/>
+                                    </span>
+                                    <br/>
+                                    <xsl:if test="count(metadata/*)&gt;0">
+                                        <strong>Metadata:</strong>
+                                        <xsl:for-each select="metadata/*">
+                                            <br/>
+                                            &#160; &#160; &#160; &#160;
+                                            <strong>
+                                                <xsl:value-of select="name()"/>
+                                            </strong>
+                                            :
+                                            <xsl:value-of select="."/>
+                                        </xsl:for-each>
+                                        <br/>
+                                    </xsl:if>
+                                    <strong>Status:</strong>
+                                    <xsl:if test="status='Succeeded'">
+                                        <span style="color:green;text-transform:uppercase">
+                                            <strong>
+                                                <xsl:value-of select="status"/>
+                                            </strong>
+                                        </span>
+                                    </xsl:if>
+                                    <xsl:if test="status='Failed' or status='Invalid'">
+                                        <span style="color:red;text-transform:uppercase">
+                                            <strong>
+                                                <xsl:value-of select="status"/>
+                                            </strong>
+                                        </span>
+                                    </xsl:if>
+                                    <xsl:if test="status='In Progress'">
+                                        <span style="color:blue;text-transform:uppercase">
+                                            <strong>
+                                                <xsl:value-of select="status"/>
+                                            </strong>
+                                        </span>
+                                    </xsl:if>
+                                    <xsl:if test="status='Aborted'">
+                                        <span style="color:orange;text-transform:uppercase">
+                                            <strong>
+                                                <xsl:value-of select="status"/>
+                                            </strong>
+                                        </span>
+                                    </xsl:if>
+                                    <br/>
+                                    <xsl:for-each select="trial_record/result">
+                                        <xsl:for-each select="list-item">
+                                            <strong>Result:</strong>
+                                            <br/>
+                                            <code>
+                                                <xsl:for-each select="logs">
+                                                    <xsl:for-each select="list-item">
+                                                        <xsl:value-of select="."/>
+                                                        <br/>
+                                                    </xsl:for-each>
+                                                </xsl:for-each>
+                                            </code>
+                                            <br/>
+                                        </xsl:for-each>
+                                    </xsl:for-each>
+                                    <xsl:for-each select="trial_record/pre_steps">
+                                        <xsl:for-each select="list-item">
+                                            <p class="step-header">
+                                                <strong>&#8226; Pre Step <xsl:value-of select="position()"/>: </strong>
+                                                <strong><xsl:value-of select="step_name"/></strong>
+                                            </p>
+                                            <strong>Parameters: </strong>
+                                            <xsl:for-each select="step_parameters/*">
+                                                <br/> &#160; &#160; &#160; &#160;
+                                                <strong><xsl:value-of select="name()"/></strong>:
+                                                <xsl:value-of select="."/>
+                                            </xsl:for-each>
+                                            <br/>
+                                            <code>
+                                                <xsl:for-each select="logs">
+                                                    <xsl:for-each select="list-item">
+                                                        <xsl:value-of select="."/>
+                                                        <br/>
+                                                    </xsl:for-each>
+                                                </xsl:for-each>
+                                            </code>
+                                            <br/>
+                                        </xsl:for-each>
+                                    </xsl:for-each>
+                                    <xsl:for-each select="trial_record/steps">
+                                        <xsl:for-each select="list-item">
+                                            <p class="step-header">
+                                                <strong>&#8226; Step <xsl:value-of select="position()"/>: </strong>
+                                                <strong><xsl:value-of select="step_name"/></strong>
+                                            </p>
+                                            <strong>Parameters: </strong>
+                                            <xsl:for-each select="step_parameters/*">
+                                                <br/> &#160; &#160; &#160; &#160;
+                                                <strong><xsl:value-of select="name()"/></strong>:
+                                                <xsl:value-of select="."/>
+                                            </xsl:for-each>
+                                            <br/>
+                                            <code>
+                                                <xsl:for-each select="logs">
+                                                    <xsl:for-each select="list-item">
+                                                        <xsl:value-of select="."/>
+                                                        <br/>
+                                                    </xsl:for-each>
+                                                </xsl:for-each>
+                                            </code>
+                                            <br/>
+                                        </xsl:for-each>
+                                    </xsl:for-each>
+                                    <xsl:for-each select="trial_record/post_steps">
+                                        <xsl:for-each select="list-item">
+                                            <p class="step-header">
+                                                <strong>&#8226; Post Step <xsl:value-of select="position()"/>: </strong>
+                                                <strong><xsl:value-of select="step_name"/></strong>
+                                            </p>
+                                            <strong>Parameters: </strong>
+                                            <xsl:for-each select="step_parameters/*">
+                                                <br/> &#160; &#160; &#160; &#160;
+                                                <strong><xsl:value-of select="name()"/></strong>:
+                                                <xsl:value-of select="."/>
+                                            </xsl:for-each>
+                                            <br/>
+                                            <code>
+                                                <xsl:for-each select="logs">
+                                                    <xsl:for-each select="list-item">
+                                                        <xsl:value-of select="."/>
+                                                        <br/>
+                                                    </xsl:for-each>
+                                                </xsl:for-each>
+                                            </code>
+                                            <br/>
+                                        </xsl:for-each>
+                                    </xsl:for-each>
+                                </xsl:for-each>
+                            </xsl:if>
+                            <xsl:if test="count(list-item)=0">No trials run</xsl:if>
+                        </xsl:for-each>
+                    </xsl:for-each>
+                </xsl:if>
+                <xsl:if test="count(//report/root/list-item)=0">
+                    <h3>No experiments created</h3>
+                </xsl:if>
+            </body>
+        </html>
+    </xsl:template>
+    <xsl:template match="xsl:stylesheet"/>
+</xsl:stylesheet>
