@@ -1,5 +1,7 @@
 # Kallisti Core
 
+![Build Status](https://github.com/jpmorganchase/kallisti-core/actions/workflows/build.yml/badge.svg)
+
 This is a library for the chaos engineering framework
 [Kallisti](https://github.com/jpmorganchase/kallisti), providing its core
 functionality of the managed chaos experiments as Kallisti API.
