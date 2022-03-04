@@ -24,11 +24,19 @@ if os.path.isfile(TEST_REQUIREMENTS):
         tests_require = [
             pkg for pkg in fd.readlines()
             if not (pkg.startswith("--") or pkg is "\n")]
+
+README = "README.md"
+with open(README, encoding="utf-8") as fd:
+    long_description = fd.read().replace("\r\n", "\n")
+
 setup(
     name="kallisti-core",
-    description='Core of the chaos engineering framework: Kallisti',
+    description='Core functionality of Kallisti Chaos Engineering Framework',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/jpmorganchase/kallisti-core',
-    author='kallisti-core authors',
+    author='The kallisti-core authors',
+    license='Apache 2.0',
     packages=find_packages(exclude=('config',)),
     install_requires=install_requires,
     version=VERSION,
@@ -36,7 +44,7 @@ setup(
         'test': tests_require,
     },
     classifiers=(
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Framework :: Django :: 2.0',
         'Natural Language :: English',

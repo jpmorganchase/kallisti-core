@@ -10,6 +10,12 @@ Please refer to the documentation of
 [Kallisti](https://github.com/jpmorganchase/kallisti) for the project details as
 well as its concepts and the road map.
 
+### Install
+
+```shell
+pip install kallisti-core
+```
+
 ### Contribution Guide
 
 ##### Reporting bugs, feature requests, etc.
