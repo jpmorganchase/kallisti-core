@@ -15,7 +15,7 @@ class TestReportSerializer(TestCase):
         self.description = 'detailed text description'
         self.parameters = {'space': 'dev',
                            'app_name': 'hello-world',
-                           'org': 'CAF-ORG'}
+                           'org': 'MY-ORG'}
         self.experiment_metadata = {'example_meta': '123456'}
         self.trial_metadata = {'trial_data': 'hello_world'}
         self.pre_steps = [{'step': 'name',
