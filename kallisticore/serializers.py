@@ -1,7 +1,6 @@
 from collections import OrderedDict
 from typing import List, Dict
 
-from kallisticore.authentication import KallistiUser
 from kallisticore.models import Trial
 from kallisticore.models.experiment import Experiment
 from kallisticore.models.notification import Notification
@@ -27,8 +26,8 @@ def validate_step(value: List[Dict]):
 
 def _get_kallisti_current_user_id(validated_data, key):
     user = validated_data.pop(key, None)
-    if user is not None and isinstance(user, KallistiUser):
-        return user.user_id
+    if user is not None:
+        return getattr(user, 'user_id', None)
     return None
 
 
@@ -90,7 +89,7 @@ class TrialSerializer(serializers.ModelSerializer):
         model = Trial
         fields = ('id', 'experiment', 'metadata', 'parameters', 'ticket',
                   'trial_record', 'status', 'executed_at', 'completed_at',
-                  'initiated_by', 'initiator')
+                  'initiated_by', 'initiator', 'initiated_from')
 
 
 class TrialForReportSerializer(TrialSerializer):

@@ -42,13 +42,6 @@ class EnvironmentValueNotFound(KallistiCoreException):
         super().__init__(message=message)
 
 
-class InvalidPlatformType(KallistiCoreException):
-    def __init__(self, platform_type: Optional[str],
-                 *args: Optional[List]) -> None:
-        message = "Invalid platform type: " + str(platform_type)
-        super().__init__(message, *args)
-
-
 class InvalidExpectOperator(KallistiCoreException):
     def __init__(self, operator: str, *args: Optional[List]) -> None:
         message = "Invalid operator: " + str(operator)

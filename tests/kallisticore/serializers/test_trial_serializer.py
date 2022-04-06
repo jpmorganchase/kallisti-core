@@ -36,7 +36,7 @@ class TestTrialSerializer(TestCase):
         serializer = TrialSerializer(self._trial)
         data = serializer.data
 
-        self.assertEqual(10, len(data))
+        self.assertEqual(11, len(data))
         self.assertIsNotNone(data['id'])
         self.assertEqual(Experiment.objects.get(id=data['experiment']),
                          self._experiment)

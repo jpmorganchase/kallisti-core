@@ -26,6 +26,8 @@ class TrialStatus(Enum):
     IN_PROGRESS = "In Progress"
     ABORTED = "Aborted"
     INVALID = "Invalid"
+    STOP_INITIATED = "Stop Initiated"
+    STOPPED = "Stopped"
 
 
 ALLOWED_TRIAL_TICKET_KEYS = getattr(
@@ -65,6 +67,7 @@ class Trial(BaseModel):
     ticket = DictField(default={}, blank=True,
                        validators=[validate_trial_ticket])
     initiated_by = models.CharField(max_length=32, default="unknown")
+    initiated_from = models.CharField(max_length=20, default="unknown")
     status = models.CharField(max_length=20,
                               default=TrialStatus.SCHEDULED.value,
                               validators=[validate_trial_status])
@@ -82,6 +85,9 @@ class Trial(BaseModel):
                 self.status == TrialStatus.INVALID.value:
             self.completed_at = timezone.datetime.now()
         self.save()
+
+    def get_status(self) -> TrialStatus:
+        return Trial.objects.get(id=self.id).status
 
     def update_executed_at(self) -> None:
         self.executed_at = timezone.datetime.now()

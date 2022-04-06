@@ -3,6 +3,7 @@ import sys
 import traceback
 from inspect import Traceback
 from typing import Optional, Type, List
+from django.conf import settings
 
 from kallisticore.exceptions import MissingParameterValueError, \
     StepsExecutionError
@@ -42,8 +43,8 @@ class TrialExecutor(Subject):
             else:
                 status = TrialStatus.FAILED
             self.trial.update_status(status)
-            self._log_unsuccessful_trial(exc_type, exc_val, exc_tb,
-                                         status.value)
+            self._log_unsuccessful_trial(
+                exc_type, exc_val, exc_tb, status.value)
         else:
             self.trial.update_status(TrialStatus.SUCCEEDED)
             self._log_successful_trial()
@@ -175,3 +176,13 @@ class TrialExecutor(Subject):
         exc_name = exc_type.__name__
         exc_val_str = str(exc_val)
         return exc_name, exc_val_str, stack_trace
+
+
+def execute_trial(instance):
+    action_module_map = getattr(settings, 'KALLISTI_MODULE_MAP', {})
+    cred_class_map = getattr(settings, 'KALLISTI_CREDENTIAL_CLASS_MAP', {})
+    with TrialExecutor(
+            instance, action_module_map, cred_class_map) as executor:
+        for observer in getattr(settings, 'KALLISTI_TRIAL_OBSERVERS', []):
+            executor.attach(observer())
+        executor.run()
