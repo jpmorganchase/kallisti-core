@@ -39,7 +39,7 @@ class TestFunctionLoader(TestCase):
         # Check raised exception.
         module_path = 'kallisticore.modules.examples.sample_module1.__all__'
         with patch(module_path, []), \
-             self.assertRaises(CouldNotFindFunction) as cm:
+                self.assertRaises(CouldNotFindFunction) as cm:
             FunctionLoader(self.MODULE_MAP, 'eg').get_function('increment')
         self.assertEqual(cm.exception.args[0], 'eg.increment')
 

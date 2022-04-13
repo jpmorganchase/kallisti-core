@@ -67,7 +67,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        # 'NAME': '/tmp/kallisticore.sqlite3'
+        # 'NAME': '/tmp/db.sqlite3'
     }
 }
 
@@ -130,8 +130,7 @@ KALLISTI_AUTH_JWT_AUDIENCE = os.getenv('KALLISTI_AUTH_JWT_AUDIENCE', '')
 # Config for JWT Retrieval on Swagger UI
 KALLISTI_AUTH_TYPE = os.getenv('KALLISTI_AUTH_TYPE', 'oauth2')
 KALLISTI_AUTH_FLOW = os.getenv('KALLISTI_AUTH_FLOW', 'password')
-KALLISTI_AUTH_JWT_TOKEN_URL = os.getenv(
-    'KALLISTI_AUTH_JWT_TOKEN_URL', '')
+KALLISTI_AUTH_JWT_TOKEN_URL = os.getenv('KALLISTI_AUTH_JWT_TOKEN_URL', '')
 KALLISTI_AUTH_URL = os.getenv('KALLISTI_AUTH_URL', '')
 KALLISTI_AUTH_TOKEN_NAME = os.getenv('KALLISTI_AUTH_TOKEN_NAME', '')
 KALLISTI_AUTH_CLIENT_ID = os.getenv('KALLISTI_AUTH_CLIENT_ID', '')

@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='trial',
             name='initiated_by',
-            field=models.CharField(default='unknown', max_length=7),
+            field=models.CharField(default='unknown', max_length=32),
         ),
     ]
