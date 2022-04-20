@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.template import loader
 from django.utils import six
 from django.utils.encoding import force_text
@@ -17,6 +18,7 @@ class XMLRenderer(BaseRenderer):
     charset = 'utf-8'
     ITEM_TAG_NAME = 'list-item'
     ROOT_TAG_NAME = 'root'
+    TITLE_TAG_NAME = 'report-title'
     XML_HEADER = '<?xml version="1.0" encoding="utf-8"?>\n'
     XSL_HEADER = '<?xml-stylesheet type="text/xsl" href="#reportstyle"?>' \
                  '<!DOCTYPE report ' \
@@ -33,12 +35,21 @@ class XMLRenderer(BaseRenderer):
 
         stream = StringIO()
         xml = SimplerXMLGenerator(stream, self.charset)
-        xml.startElement(self.ROOT_TAG_NAME, {})
-        self._to_xml(xml, data)
-        xml.endElement(self.ROOT_TAG_NAME)
+        self._append_title(xml)
+        self._append_data(xml, data)
         xml.endDocument()
         return self.XML_HEADER + self.XSL_HEADER + '<report>\n' \
             + self.XSL_TEMPLATE.source + stream.getvalue() + '</report>\n'
+
+    def _append_title(self, xml):
+        xml.startElement(self.TITLE_TAG_NAME, {})
+        xml.characters(settings.KALLISTI_REPORT_HEADER_TITLE)
+        xml.endElement(self.TITLE_TAG_NAME)
+
+    def _append_data(self, xml, data):
+        xml.startElement(self.ROOT_TAG_NAME, {})
+        self._to_xml(xml, data)
+        xml.endElement(self.ROOT_TAG_NAME)
 
     def _to_xml(self, xml, data):
         if isinstance(data, (list, tuple)):

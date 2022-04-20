@@ -817,6 +817,56 @@ class TestTrialRunOnExit(TestTrialExecutor):
         self.observer_mock.update.assert_called_once_with(trial=self._trial)
 
 
+class TestTrialRunOnStopped(TestTrialExecutor):
+    def setUp(self):
+        super(TestTrialRunOnStopped, self).setUp()
+        self.updated_status = None
+
+    def test_stopped_status(self):
+        with mock.patch(self.LOG_REC) as mock_log_rec_cls, \
+            mock.patch(self.COMMIT) as mock_rec_commit, \
+            mock.patch(self.CF_STOP_APP), \
+            mock.patch(self.CF_START_APP), \
+                TrialExecutor(self._trial, self.module_map, {}) \
+                as trial_executor:
+            mock_trial_log = mock.Mock()
+            mock_trial_log.append = mock.Mock()
+            mock_log_rec_cls.return_value = mock_trial_log
+
+            self._trial.update_status(TrialStatus.STOP_INITIATED)
+
+            def update_status_mock_func(arg):
+                self.updated_status = arg
+
+            update_status_mock = mock.Mock()
+            update_status_mock.side_effect = update_status_mock_func
+            self._trial.update_status = update_status_mock
+
+            trial_executor.run()
+            mock_log_rec_cls.assert_called_with('result')
+            mock_rec_commit.assert_has_calls([call(mock_trial_log)])
+            self.assertEqual(self.updated_status, TrialStatus.STOPPED)
+
+    def test_not_stopped_in_post_steps(self):
+        with mock.patch(self.LOG_REC), \
+            mock.patch(self.COMMIT), \
+            mock.patch(self.CF_STOP_APP), \
+            mock.patch(self.CF_START_APP), \
+                TrialExecutor(self._trial, self.module_map, {}) \
+                as trial_executor:
+
+            def update_status_if_start_app(arg1, arg2):
+                if arg1.get_function_name() == 'start_app':
+                    self._trial.update_status(TrialStatus.STOP_INITIATED)
+
+            execute_action_mock = mock.Mock()
+            execute_action_mock.side_effect = update_status_if_start_app
+            trial_executor._execute_action = execute_action_mock
+            trial_executor.run()
+
+        self.assertEqual(self._trial.status, TrialStatus.SUCCEEDED.value)
+
+
 class TestExecuteTrial(TestCase):
 
     @mock.patch("kallisticore.lib.trial_executor.TrialExecutor", autospec=True)
