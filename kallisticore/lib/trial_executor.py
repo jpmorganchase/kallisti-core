@@ -6,7 +6,7 @@ from typing import Optional, Type, List
 from django.conf import settings
 
 from kallisticore.exceptions import MissingParameterValueError, \
-    StepsExecutionError
+    StepsExecutionError, TrialStopError
 from kallisticore.lib.action import make_action
 from kallisticore.lib.observe.subject import Subject
 from kallisticore.lib.trial_log_recorder import TrialLogRecord, \
@@ -80,6 +80,9 @@ class TrialExecutor(Subject):
 
     def _execute_steps(self, steps: List[Step], step_type: TrialStepsType):
         for step in steps:
+            if step_type != TrialStepsType.POST and \
+                    self.trial.get_status() == TrialStatus.STOP_INITIATED:
+                raise TrialStopError()
             step_name = step.get_function_name().replace('_', ' ').capitalize()
             trial_steps_log = TrialStepLogRecord(step_type.value, step_name,
                                                  step.where)

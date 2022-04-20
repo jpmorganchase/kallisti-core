@@ -198,3 +198,6 @@ SWAGGER_SETTINGS = {
         'appName': KALLISTI_AUTH_CLIENT_APP_NAME,
     }
 }
+
+# Report Header
+KALLISTI_REPORT_HEADER_TITLE = "Kallisti Report"

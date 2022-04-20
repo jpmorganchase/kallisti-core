@@ -57,6 +57,15 @@ class FailedExpectation(KallistiCoreException):
         return self.message
 
 
+class TrialStopError(KallistiCoreException):
+    def __init__(self) -> None:
+        message = "Trial has been stopped"
+        super().__init__(message)
+
+    def __str__(self):
+        return self.message
+
+
 class KeyNotFoundException(KallistiCoreException):
     pass
 

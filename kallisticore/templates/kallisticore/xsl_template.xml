@@ -2,7 +2,7 @@
     <xsl:template match="/">
         <html lang="en">
             <head>
-                <title>Kallisti Report</title>
+                <title><xsl:value-of select="//report/report-title"/></title>
                 <style>
                     body {font-family: Calibri;}
                     ul, ol {margin-top: 0;}
@@ -11,7 +11,7 @@
                 </style>
             </head>
             <body>
-                <h1>Kallisti Report</h1>
+                <h1><xsl:value-of select="//report/report-title"/></h1>
                 <xsl:if test="count(//report/root/list-item)&gt;0">
                     <p>
                         This report aggregates over
