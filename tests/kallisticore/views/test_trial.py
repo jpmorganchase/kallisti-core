@@ -11,6 +11,7 @@ from kallisticore.models.step import Step
 from kallisticore.serializers import TrialSerializer
 from kallisticore.signals import execute_plan_for_trial
 from tests.kallisticore.base import KallistiTestSuite
+from uuid import uuid4
 
 
 class TestTrialListAPI(KallistiTestSuite):
@@ -80,7 +81,7 @@ class TestTrialGetAPI(KallistiTestSuite):
     def setUp(self):
         self._token = '123123123123123'
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self._token)
-
+        self.notexists = uuid4()
         self.parameters = {"org": "MY-ORG",
                            "app_name": "hello-world"}
         self.steps = [{"step": "name",
@@ -117,7 +118,7 @@ class TestTrialGetAPI(KallistiTestSuite):
         self.assertEqual(TrialSerializer(trial).data, response_data)
 
     def test_get_non_existing_trial(self):
-        url = reverse('trial-detail', args=['notexists'])
+        url = reverse('trial-detail', args=[self.notexists])
         response = self.client.get(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

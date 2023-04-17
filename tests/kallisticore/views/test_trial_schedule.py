@@ -4,6 +4,7 @@ from kallisticore.models.trial_schedule import TrialSchedule
 from kallisticore.serializers import TrialScheduleSerializer
 from rest_framework import status
 from tests.kallisticore.base import KallistiTestSuite
+from uuid import uuid4
 
 
 class TestTrialScheduleListAPI(KallistiTestSuite):
@@ -64,7 +65,8 @@ class TestTrialScheduleDetailAPI(KallistiTestSuite):
     def setUp(self):
         self._token = '123123123123123'
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self._token)
-
+        self._non_existing_pk = uuid4()
+        self._non_existing_experiment_id = uuid4()
         self._experiment = Experiment.create()
         super(TestTrialScheduleDetailAPI, self).setUp()
 
@@ -75,7 +77,7 @@ class TestTrialScheduleDetailAPI(KallistiTestSuite):
     def test_detail_with_non_existing_pk(self):
         url = reverse('trial-schedule-detail',
                       kwargs={'experiment_id': self._experiment.id,
-                              'pk': 'non-existing-pk'})
+                              'pk': self._non_existing_pk})
         response = self.client.get(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -86,7 +88,7 @@ class TestTrialScheduleDetailAPI(KallistiTestSuite):
             recurrence_pattern='* * * * *'
         )
         url = reverse('trial-schedule-detail',
-                      kwargs={'experiment_id': 'non-existing-experiment-id',
+                      kwargs={'experiment_id': self._non_existing_experiment_id,
                               'pk': trial_schedule.id})
         response = self.client.get(url, format='json')
 
@@ -181,6 +183,8 @@ class TestTrialScheduleDeleteAPI(KallistiTestSuite):
     def setUp(self):
         super(TestTrialScheduleDeleteAPI, self).setUp()
         self._token = '123123123123123'
+        self._non_existing_id = uuid4()
+        self._non_existing_pk = uuid4()        
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self._token)
 
     def tearDown(self):
@@ -202,8 +206,8 @@ class TestTrialScheduleDeleteAPI(KallistiTestSuite):
 
     def test_delete_with_invalid_id(self):
         url = reverse('trial-schedule-detail',
-                      kwargs={'experiment_id': 'non-existing-id',
-                              'pk': 'non-existing-pk'})
+                      kwargs={'experiment_id': self._non_existing_id,
+                              'pk': self._non_existing_pk})
         response = self.client.delete(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -214,6 +218,8 @@ class TestTrialSchedulePatchAPI(KallistiTestSuite):
     def setUp(self):
         super(TestTrialSchedulePatchAPI, self).setUp()
         self._token = '123123123123123'
+        self._non_existing_id = uuid4()
+        self._non_existing_pk = uuid4()
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self._token)
         self._data = {'recurrence_pattern': '5 * * * *'}
 
@@ -223,8 +229,8 @@ class TestTrialSchedulePatchAPI(KallistiTestSuite):
 
     def test_patch_with_invalid_id(self):
         url = reverse('trial-schedule-detail',
-                      kwargs={'experiment_id': 'non-existing-id',
-                              'pk': 'non-existing-pk'})
+                      kwargs={'experiment_id': self._non_existing_id,
+                              'pk': self._non_existing_pk})
         response = self.client.patch(url, data=self._data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

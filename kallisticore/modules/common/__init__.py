@@ -5,8 +5,6 @@ from json import JSONDecodeError
 from typing import Dict, Optional
 
 import requests
-from django.conf import settings
-
 from kallisticore import exceptions
 from kallisticore.lib.credential import Credential, TokenCredential, \
     UsernamePasswordCredential
@@ -89,8 +87,7 @@ def _get_oauth_token_for_http_request_auth_header(config: Dict) -> str:
     if 'token_key' in config:
         response_token_key = config['token_key']
 
-    cred_class_map = getattr(settings, 'KALLISTI_CREDENTIAL_CLASS_MAP', {})
-    credential = Credential.build(cred_class_map, config['credentials'])
+    credential = Credential.build(config['credentials'])
     credential.fetch()
 
     if isinstance(credential, TokenCredential):

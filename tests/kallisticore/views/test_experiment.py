@@ -3,6 +3,7 @@ from kallisticore.models.experiment import Experiment
 from kallisticore.serializers import ExperimentSerializer
 from rest_framework import status
 from tests.kallisticore.base import KallistiTestSuite
+from uuid import uuid4
 
 
 class TestExperimentListAPI(KallistiTestSuite):
@@ -43,6 +44,7 @@ class TestExperimentGetAPI(KallistiTestSuite):
     def setUp(self):
         super(TestExperimentGetAPI, self).setUp()
         self._token = '123123123123123'
+        self._non_existent = uuid4()
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self._token)
 
     def tearDown(self):
@@ -50,7 +52,7 @@ class TestExperimentGetAPI(KallistiTestSuite):
         super(TestExperimentGetAPI, self).tearDown()
 
     def test_get_details_with_invalid_id(self):
-        url = reverse('experiment-detail', args=['non-existent'])
+        url = reverse('experiment-detail', args=[self._non_existent])
         response = self.client.get(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -102,6 +104,7 @@ class TestExperimentDeleteAPI(KallistiTestSuite):
     def setUp(self):
         super(TestExperimentDeleteAPI, self).setUp()
         self._token = '123123123123123'
+        self._non_existent = uuid4()
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self._token)
 
     def tearDown(self):
@@ -109,7 +112,7 @@ class TestExperimentDeleteAPI(KallistiTestSuite):
         super(TestExperimentDeleteAPI, self).tearDown()
 
     def test_delete_with_invalid_id(self):
-        url = reverse('experiment-detail', args=['non-existent'])
+        url = reverse('experiment-detail', args=[self._non_existent])
         response = self.client.delete(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -133,6 +136,7 @@ class TestExperimentPatchAPI(KallistiTestSuite):
                                      'redirection would be resilient to DB '
                                      'failures'}
         self._token = '123123123123123'
+        self._non_existent = uuid4()
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self._token)
 
     def tearDown(self):
@@ -140,7 +144,7 @@ class TestExperimentPatchAPI(KallistiTestSuite):
         super(TestExperimentPatchAPI, self).tearDown()
 
     def test_patch_with_invalid_id(self):
-        url = reverse('experiment-detail', args=['non-existent'])
+        url = reverse('experiment-detail', args=[self._non_existent])
         response = self.client.patch(url, data=self._data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
