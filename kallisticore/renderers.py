@@ -2,9 +2,9 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.template import loader
-from django.utils import six
-from django.utils.encoding import force_text
-from django.utils.six import StringIO
+import six
+from django.utils.encoding import force_str as force_text
+from six import StringIO
 from django.utils.xmlutils import SimplerXMLGenerator
 from rest_framework.renderers import BaseRenderer
 

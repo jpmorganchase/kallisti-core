@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.urls import re_path, include
 from rest_framework.routers import DefaultRouter
 
 from kallisticore.views.experiment import ExperimentViewSet
@@ -15,10 +15,10 @@ router.register(r'experiment/(?P<experiment_id>[-\w]+)/schedule',
                 TrialScheduleViewSet, 'trial-schedule')
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^report', ReportAPI.as_view(), name='report'),
-    url(r'^notification', NotificationViewSet.as_view(
+    re_path(r'^', include(router.urls)),
+    re_path(r'^report', ReportAPI.as_view(), name='report'),
+    re_path(r'^notification', NotificationViewSet.as_view(
         {'get': 'list', 'put': 'update'}), name='notification'),
-    url(r'trial/(?P<trial_id>[-\w]+)/stop', TrialStopAPI.as_view(),
-        name='trial-stop'),
+    re_path(r'trial/(?P<trial_id>[-\w]+)/stop', TrialStopAPI.as_view(),
+            name='trial-stop')
 ]

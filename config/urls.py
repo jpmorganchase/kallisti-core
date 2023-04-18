@@ -13,10 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.shortcuts import redirect
-from django.urls import path, include, reverse
+from django.urls import path, include, reverse, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
@@ -44,15 +43,15 @@ def redirect_to_swagger_ui(*args, **kwargs):
 urlpatterns = [
                   path(settings.KALLISTI_API_V1_URL,
                        include('kallisticore.urls')),
-                  url(r'^$', redirect_to_swagger_ui),
-                  url(r'^swagger(?P<format>\.json|\.yaml)$',
-                      schema_view.without_ui(cache_timeout=None),
-                      name='schema-json'),
-                  url(r'^swagger/$',
-                      schema_view.with_ui('swagger', cache_timeout=None),
-                      name='swagger-ui'),
-                  url(r'^redoc/$',
-                      schema_view.with_ui('redoc', cache_timeout=None),
-                      name='swagger-redoc'),
+                  re_path(r'^$', redirect_to_swagger_ui),
+                  re_path(r'^swagger(?P<format>\.json|\.yaml)$',
+                          schema_view.without_ui(cache_timeout=None),
+                          name='schema-json'),
+                  re_path(r'^swagger/$',
+                          schema_view.with_ui('swagger', cache_timeout=None),
+                          name='swagger-ui'),
+                  re_path(r'^redoc/$',
+                          schema_view.with_ui('redoc', cache_timeout=None),
+                          name='swagger-redoc'),
               ] + static(settings.STATIC_URL,
                          document_root=settings.STATIC_ROOT)
