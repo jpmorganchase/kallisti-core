@@ -46,7 +46,7 @@ setup(
     classifiers=(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
-        'Framework :: Django :: 2.0',
+        'Framework :: Django :: 4.0',
         'Natural Language :: English',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
