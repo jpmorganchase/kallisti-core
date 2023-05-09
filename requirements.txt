@@ -7,7 +7,7 @@ chaostoolkit-lib>=0.22.2,<1.0.0
 chaostoolkit-prometheus>=0.3.0,<1.0.0
 chaostoolkit-spring<=0.2.0,<1.0.0
 croniter==0.3.29
-Django==4.1.7
+Django==4.1.9
 django-cors-headers==3.13.0
 djangorestframework==3.14.0
 drf-yasg==1.21.5
